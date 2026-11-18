@@ -2,676 +2,273 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shadow Close — September 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}</style>
+<title>Meridian September Close</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
-  :root {
-    --ink: #1b1f24; --muted: #5c6670; --line: #d9dee3; --bg: #f6f7f9; --card: #ffffff;
-    --ok: #1e7f4f; --ok-bg: #e6f4ec; --judg: #9a6700; --judg-bg: #fff4d6;
-    --bad: #b42318; --bad-bg: #fdecea; --info: #175cd3; --info-bg: #e8f0fd;
-    --fav: #1e7f4f; --unfav: #b42318;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 16px/1.45 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 64px; }
-  h1 { font-size: 28px; margin: 0; letter-spacing: -0.01em; }
-  h2 { font-size: 20px; margin: 36px 0 12px; }
-  h3 { font-size: 16px; margin: 20px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-  p { margin: 6px 0; }
-  .sub { color: var(--muted); }
-  .badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px;
-           border: 1px solid var(--line); background: var(--card); color: var(--muted); vertical-align: middle; margin-left: 10px; }
-  .badge.synthetic { border-color: var(--judg); color: var(--judg); background: var(--judg-bg); }
-  header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
-  .strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 18px; }
-  .tile .n { font-size: 34px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
-  .tile .l { color: var(--muted); font-size: 14px; margin-top: 4px; }
-  .tile.ok .n { color: var(--ok); } .tile.judg .n { color: var(--judg); } .tile.bad .n { color: var(--bad); }
-  .alert { border-left: 5px solid var(--bad); background: var(--bad-bg); padding: 12px 16px; border-radius: 8px; margin: 10px 0; }
-  .alert.none { border-color: var(--ok); background: var(--ok-bg); }
-  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
-  td.num, th.num { text-align: right; white-space: nowrap; }
-  .fav { color: var(--fav); } .unfav { color: var(--unfav); }
-  details.row { border-bottom: 1px solid var(--line); }
-  details.row > summary { list-style: none; cursor: pointer; display: grid; gap: 10px; padding: 9px 10px;
-      grid-template-columns: 22px 1.2fr 1.4fr .9fr .9fr .9fr .6fr; align-items: baseline; }
-  details.row > summary::-webkit-details-marker { display: none; }
-  details.row > summary:hover { background: var(--bg); }
-  details.row > summary .num { text-align: right; white-space: nowrap; }
-  details.row > summary .cc { color: var(--muted); }
-  details.row > summary::before { content: "▸"; color: var(--muted); }
-  details.row[open] > summary::before { content: "▾"; }
-  .grid-head { display: grid; gap: 10px; padding: 6px 10px; grid-template-columns: 22px 1.2fr 1.4fr .9fr .9fr .9fr .6fr;
-      font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; border-bottom: 1px solid var(--line); }
-  .grid-head .num { text-align: right; }
-  .gl { padding: 6px 10px 14px 28px; }
-  .gl table { font-size: 14px; }
-  .gl td, .gl th { padding: 5px 8px; }
-  .gl tr.dup td { background: var(--bad-bg); }
-  .sentence { display: grid; grid-template-columns: 150px 1fr; gap: 12px; padding: 9px 12px; margin: 6px 0;
-              border-radius: 8px; border-left: 5px solid var(--line); background: var(--card); }
-  .sentence.VERIFIED { border-left-color: var(--ok); }
-  .sentence.NEEDS.JUDGMENT, .sentence.NEEDS_JUDGMENT { border-left-color: var(--judg); background: var(--judg-bg); }
-  .sentence.UNSUPPORTED { border-left-color: var(--bad); background: var(--bad-bg); }
-  .chip { font-size: 12px; font-weight: 700; letter-spacing: .03em; padding: 2px 8px; border-radius: 6px; white-space: nowrap; align-self: start; }
-  .chip.VERIFIED { color: var(--ok); background: var(--ok-bg); }
-  .chip.NEEDS_JUDGMENT { color: var(--judg); background: #fde9b3; }
-  .chip.UNSUPPORTED { color: var(--bad); background: #f9d2cd; }
-  .reason { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
-  .analyst { background: #fde9b3; padding: 1px 4px; border-radius: 4px; font-weight: 600; }
-  .src { color: var(--muted); font-size: 13px; }
-  ol.queue { padding-left: 22px; } ol.queue li { margin: 10px 0; }
-  ol.queue .ctx { color: var(--muted); font-size: 14px; display: block; margin-top: 2px; }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 900px) { .two { grid-template-columns: 1fr; }
-    details.row > summary { grid-template-columns: 22px 1fr 1fr 1fr; } .grid-head { display: none; } }
-  footer { margin-top: 40px; color: var(--muted); font-size: 14px; }
-  code { font-size: 90%; background: var(--bg); padding: 1px 4px; border-radius: 4px; }
-</style>
-</head>
-<body>
-<main>
+/* Layout: one column of bold bands. Thesis, three stages, scoreboard, variance chart, what's left for you. */
+:root {
+  --bg: #eef2f7;
+  --surface: #ffffff;
+  --ink: #0d1a2b;
+  --muted: #56647a;
+  --line: #d5dde8;
+  --accent: #2346d8;
+  --accent-soft: #e2e8fd;
+  --ok: #157a4a;      --ok-soft: #dcf1e5;
+  --judg: #b86a00;    --judg-soft: #fdefd6;
+  --bad: #c0262d;     --bad-soft: #fbe1e2;
+  --hero-bg: #0d1a2b; --hero-ink: #f4f7fb; --hero-muted: #9fb0c8;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1320; --surface: #121d2e; --ink: #e8eef7; --muted: #9aa9bf; --line: #243349;
+  --accent: #7c97ff; --accent-soft: #1d2a52;
+  --ok: #4fcf8c; --ok-soft: #12321f; --judg: #f2ae45; --judg-soft: #3a2a0f; --bad: #ff6f75; --bad-soft: #3d1517;
+  --hero-bg: #060c16; --hero-ink: #f4f7fb; --hero-muted: #93a4bd; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b1320; --surface: #121d2e; --ink: #e8eef7; --muted: #9aa9bf; --line: #243349;
+  --accent: #7c97ff; --accent-soft: #1d2a52;
+  --ok: #4fcf8c; --ok-soft: #12321f; --judg: #f2ae45; --judg-soft: #3a2a0f; --bad: #ff6f75; --bad-soft: #3d1517;
+  --hero-bg: #060c16; --hero-ink: #f4f7fb; --hero-muted: #93a4bd; color-scheme: dark; }
 
-<header>
-  <div>
-    <h1>September 2026 close — Shadow Close replay
-      <span class="badge synthetic">Synthetic data</span></h1>
-    <p class="sub">Meridian Capital Services (fictional) · AI assembled, code verified, humans decide.</p>
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 17px/1.5 var(--body); }
+.wrap { max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font: 600 13px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* Hero */
+.hero { background: var(--hero-bg); color: var(--hero-ink); }
+.hero .wrap { padding-block: 56px 64px; display: grid; gap: 28px; }
+.hero .top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.hero .eyebrow { color: var(--hero-muted); }
+.tag { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase;
+  padding: 7px 11px; border-radius: 999px; border: 1px solid #f2ae45; color: #f2ae45; }
+.hero h1 { font-size: clamp(40px, 7.4vw, 84px); font-weight: 800; line-height: .98; letter-spacing: -.03em; }
+.hero h1 .a { color: #9fb5ff; } .hero h1 .b { color: #6fe0a6; } .hero h1 .c { color: #ffc266; }
+.hero p.lede { max-width: 60ch; margin: 0; color: var(--hero-muted); font-size: 19px; }
+
+/* Stages */
+.stages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: -34px; }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px;
+  display: grid; gap: 8px; align-content: start; box-shadow: 0 10px 30px -18px rgba(13,26,43,.45); }
+.stage .who { font: 700 13px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; }
+.stage h3 { font-size: 24px; font-weight: 700; }
+.stage p { margin: 0; color: var(--muted); font-size: 15.5px; }
+.stage.s1 .who { color: var(--accent); } .stage.s2 .who { color: var(--ok); } .stage.s3 .who { color: var(--judg); }
+.stage .bar { height: 5px; border-radius: 3px; }
+.stage.s1 .bar { background: var(--accent); } .stage.s2 .bar { background: var(--ok); } .stage.s3 .bar { background: var(--judg); }
+
+section { padding-block: 52px 0; }
+section > .wrap { display: grid; gap: 20px; }
+h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -.02em; }
+.sub { color: var(--muted); margin: 0; max-width: 64ch; }
+
+/* Scoreboard */
+.score { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; display: grid; gap: 6px; }
+.tile .big { font: 800 clamp(40px, 5vw, 56px)/1 var(--display); letter-spacing: -.03em; }
+.tile .lbl { color: var(--muted); font-size: 15px; }
+.tile.ok .big { color: var(--ok); } .tile.judg .big { color: var(--judg); } .tile.acc .big { color: var(--accent); }
+
+.meter { display: flex; height: 16px; border-radius: 8px; overflow: hidden; background: var(--line); }
+.meter span { display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 15px; color: var(--muted); }
+.dot { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 7px; vertical-align: -1px; }
+
+/* Variance chart */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px 14px; overflow-x: auto; }
+.row { display: grid; grid-template-columns: minmax(170px, 1.1fr) minmax(260px, 2fr) 130px; gap: 14px; align-items: center;
+  padding-block: 11px; border-bottom: 1px solid var(--line); }
+.row:last-of-type { border-bottom: 0; }
+.row .name { min-width: 0; }
+.row .name b { display: block; font-weight: 600; }
+.row .name small { color: var(--muted); font-size: 13.5px; }
+.track { position: relative; height: 26px; }
+.track::before { content: ""; position: absolute; left: 50%; top: -6px; bottom: -6px; width: 2px; background: var(--line); }
+.bar { position: absolute; top: 3px; height: 20px; border-radius: 4px; }
+.bar.pos { left: calc(50% + 1px); } .bar.neg { right: calc(50% + 1px); }
+.bar.ok { background: var(--ok); } .bar.judg { background: var(--judg); } .bar.bad { background: var(--bad);
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgba(255,255,255,.35) 6px 10px); }
+.val { text-align: right; display: grid; gap: 4px; justify-items: end; }
+.val .num { font-weight: 600; font-size: 17px; }
+.pill { font: 700 11.5px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; padding: 5px 8px; border-radius: 6px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: var(--ok-soft); }
+.pill.judg { color: var(--judg); background: var(--judg-soft); }
+.pill.bad { color: var(--bad); background: var(--bad-soft); }
+.axis { display: grid; grid-template-columns: minmax(170px, 1.1fr) minmax(260px, 2fr) 130px; gap: 14px;
+  font: 500 12.5px/1 var(--mono); color: var(--muted); padding-top: 10px; }
+.axis .scale { display: flex; justify-content: space-between; }
+
+/* Alert */
+.alert { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start;
+  background: var(--bad-soft); border: 1px solid var(--bad); border-radius: 14px; padding: 20px 22px; }
+.alert .icon { width: 44px; height: 44px; border-radius: 50%; background: var(--bad); color: #fff;
+  display: grid; place-items: center; font: 800 24px/1 var(--display); }
+.alert h3 { font-size: 22px; color: var(--bad); }
+.alert p { margin: 4px 0 0; }
+.dup { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.dup span { font: 600 14px/1 var(--mono); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
+
+/* Judgment queue */
+.queue { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--judg); border-radius: 14px;
+  padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+.q .amt { font: 700 30px/1 var(--display); color: var(--judg); letter-spacing: -.02em; }
+.q h3 { font-size: 19px; font-weight: 700; }
+.q p { margin: 0; color: var(--muted); font-size: 15.5px; }
+.q .ask { color: var(--ink); font-weight: 500; }
+
+footer { padding-block: 56px 48px; color: var(--muted); font-size: 14.5px; }
+footer .wrap { display: grid; gap: 6px; }
+
+@media (max-width: 860px) {
+  .stages, .queue { grid-template-columns: minmax(0, 1fr); }
+  .score { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stages { margin-top: -26px; }
+}
+@media (max-width: 560px) {
+  .row, .axis { grid-template-columns: minmax(0, 1fr) 112px; }
+  .row .track { grid-column: 1 / -1; grid-row: 2; }
+  .axis .spacer:last-child { display: none; }
+  .axis { grid-template-columns: minmax(0, 1fr); }
+  .axis .spacer { display: none; }
+  .chart { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bar { transform-origin: left; animation: grow .8s cubic-bezier(.2,.7,.2,1) both; }
+  .bar.neg { transform-origin: right; }
+  @keyframes grow { from { transform: scaleX(.15); } to { transform: scaleX(1); } }
+}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <span class="eyebrow">Meridian Capital Services · September 2026 close</span>
+      <span class="tag">Synthetic data</span>
+    </div>
+    <h1><span class="a">AI assembles.</span><br><span class="b">Code checks.</span><br><span class="c">You decide.</span></h1>
+    <p class="lede">A replay of last month's close. The machine did the pulling, tying out and first drafts. Every number was re-checked by code against the ledger. The calls that need judgment came back to the analyst.</p>
   </div>
-  <p class="sub">Materiality: |variance| ≥ $50K or ≥ 5%</p>
 </header>
 
-<section class="strip">
-  <div class="card tile"><div class="n">7</div><div class="l">material variances flagged</div></div>
-  <div class="card tile ok"><div class="n">65%</div><div class="l">of 23 drafted sentences verified against the GL</div></div>
-  <div class="card tile judg"><div class="n">6</div><div class="l">judgment calls left for the analyst</div></div>
-  <div class="card tile "><div class="n">0</div><div class="l">unsupported sentences (would be blocked)</div></div>
-  <div class="card tile"><div class="n">~10.2h</div><div class="l">of assembly work handled <a href="#assumptions" class="sub">(assumptions)</a></div></div>
+<div class="wrap">
+  <div class="stages">
+    <div class="stage s1"><div class="bar"></div><span class="who">AI</span><h3>Pulls and drafts</h3>
+      <p>Matches the ledger to budget, flags what moved, and writes the first draft of commentary and the board story.</p></div>
+    <div class="stage s2"><div class="bar"></div><span class="who">Code</span><h3>Checks every number</h3>
+      <p>Recomputes each figure in each sentence from the raw ledger. A wrong number cannot get through.</p></div>
+    <div class="stage s3"><div class="bar"></div><span class="who">Analyst</span><h3>Makes the calls</h3>
+      <p>Gets a short list of questions only a person can answer. No invented reasons, ever.</p></div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">The scoreboard</span>
+    <h2>What the close looked like</h2>
+    <div class="score">
+      <div class="tile acc"><span class="big num">7</span><span class="lbl">variances big enough to explain</span></div>
+      <div class="tile ok"><span class="big num">15</span><span class="lbl">sentences verified against the ledger</span></div>
+      <div class="tile judg"><span class="big num">3</span><span class="lbl">calls left for the analyst</span></div>
+      <div class="tile"><span class="big num">~10h</span><span class="lbl">of assembly work handled (estimate)</span></div>
+    </div>
+    <div class="meter" role="img" aria-label="23 drafted sentences: 15 verified, 8 need judgment, 0 unsupported">
+      <span style="width:65.2%;background:var(--ok)"></span>
+      <span style="width:34.8%;background:var(--judg)"></span>
+    </div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--ok)"></i>15 verified</span>
+      <span><i class="dot" style="background:var(--judg)"></i>8 need judgment</span>
+      <span><i class="dot" style="background:var(--bad)"></i>0 unsupported</span>
+      <span>of 23 drafted sentences</span>
+    </div>
+  </div>
 </section>
 
-<h2>Data-quality alerts</h2>
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Budget vs actual</span>
+    <h2>Seven lines moved. Four are explained.</h2>
+    <p class="sub">Each bar is the gap to budget, drawn to the same scale. Green means the reason is on record. Amber means a person has to say why. Striped red is a ledger error.</p>
+    <div class="chart">
+      <div class="row"><div class="name"><b>Fund Admin Fees</b><small>Revenue · Fund Administration</small></div>
+        <div class="track"><div class="bar neg ok" style="width:46.9%"></div></div>
+        <div class="val"><span class="num">−$422K</span><span class="pill ok">Explained</span></div></div>
+      <div class="row"><div class="name"><b>Advisory Fees</b><small>Revenue · Corporate</small></div>
+        <div class="track"><div class="bar pos judg" style="width:33.8%"></div></div>
+        <div class="val"><span class="num">+$304K</span><span class="pill judg">Your call</span></div></div>
+      <div class="row"><div class="name"><b>Professional Fees</b><small>Cost · Corporate · one-off legal fee</small></div>
+        <div class="track"><div class="bar pos ok" style="width:29.2%"></div></div>
+        <div class="val"><span class="num">+$263K</span><span class="pill ok">Explained</span></div></div>
+      <div class="row"><div class="name"><b>Salaries &amp; Wages</b><small>Cost · Technology · hires started late</small></div>
+        <div class="track"><div class="bar neg ok" style="width:19.8%"></div></div>
+        <div class="val"><span class="num">−$178K</span><span class="pill ok">Explained</span></div></div>
+      <div class="row"><div class="name"><b>Contractors</b><small>Cost · Fund Administration · backfilling roles</small></div>
+        <div class="track"><div class="bar pos ok" style="width:17.1%"></div></div>
+        <div class="val"><span class="num">+$154K</span><span class="pill ok">Explained</span></div></div>
+      <div class="row"><div class="name"><b>Software &amp; Cloud</b><small>Cost · Technology</small></div>
+        <div class="track"><div class="bar pos judg" style="width:10.7%"></div></div>
+        <div class="val"><span class="num">+$96K</span><span class="pill judg">Your call</span></div></div>
+      <div class="row"><div class="name"><b>Professional Fees</b><small>Cost · Investor Services</small></div>
+        <div class="track"><div class="bar pos bad" style="width:9.3%"></div></div>
+        <div class="val"><span class="num">+$84K</span><span class="pill bad">Ledger error</span></div></div>
+      <div class="axis"><span class="spacer"></span>
+        <div class="scale num"><span>−$450K</span><span>under budget · 0 · over budget</span><span>+$450K</span></div>
+        <span class="spacer"></span></div>
+    </div>
+    <p class="sub">Totals: revenue came in <b class="num">$158K</b> under budget (−1.0%). Costs came in <b class="num">$410K</b> over (+4.4%).</p>
+  </div>
+</section>
 
-  
-  <div class="alert">
-    <strong>Possible duplicate posting:</strong> JE-2609-036 and JE-2609-037 are identical —
-    2026-09-18 · Investor Services · Professional Fees · “Larkspur Assurance Partners - Q3 compliance review” · $85K each.
-    Every figure below is computed on the GL as posted, so it includes both lines.
-    If one is reversed, Investor Services Professional Fees and total expenses each move by $85K.
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Caught by code</span>
+    <div class="alert">
+      <div class="icon" aria-hidden="true">!</div>
+      <div>
+        <h3>The same $85K invoice was posted twice</h3>
+        <p>Larkspur Assurance Partners, Q3 compliance review, 18 September. Same date, same amount, same description, two journal entries. Reversing one removes almost all of the Investor Services overspend.</p>
+        <div class="dup"><span>JE-2609-036</span><span>JE-2609-037</span><span>$85,000 each</span></div>
+      </div>
+    </div>
   </div>
-  
+</section>
 
-
-<h2>Material variances — click a row for its GL lines</h2>
-<div class="card" style="padding:6px 0">
-  <div class="grid-head"><span></span><span>Cost center</span><span>Account</span><span class="num">Actual</span><span class="num">Budget</span><span class="num">Variance</span><span class="num">%</span></div>
-  
-  <details class="row">
-    <summary>
-      <span class="cc">Fund Administration</span>
-      <span>Fund Admin Fees</span>
-      <span class="num">$2.83M</span>
-      <span class="num">$3.25M</span>
-      <span class="num unfav">−$422K</span>
-      <span class="num unfav">-13.0%</span>
-    </summary>
-    <div class="gl">
-      <table>
-        <tr><th>Journal</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
-        
-        <tr class=""><td><code>JE-2609-012</code></td><td>2026-09-06</td><td>Fund administration fee billing - client group A</td><td class="num">$1.29M</td></tr>
-        
-        <tr class=""><td><code>JE-2609-015</code></td><td>2026-09-09</td><td>Fund administration fee billing - client group B</td><td class="num">$1.54M</td></tr>
-        
-      </table>
-    </div>
-  </details>
-  
-  <details class="row">
-    <summary>
-      <span class="cc">Corporate</span>
-      <span>Advisory Fees</span>
-      <span class="num">$1.80M</span>
-      <span class="num">$1.50M</span>
-      <span class="num fav">+$304K</span>
-      <span class="num fav">+20.3%</span>
-    </summary>
-    <div class="gl">
-      <table>
-        <tr><th>Journal</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
-        
-        <tr class=""><td><code>JE-2609-017</code></td><td>2026-09-10</td><td>Advisory fee billing - Redhaven Pension Mandate</td><td class="num">$797K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-026</code></td><td>2026-09-14</td><td>Advisory fee billing - Oakline Endowment Mandate</td><td class="num">$1.01M</td></tr>
-        
-      </table>
-    </div>
-  </details>
-  
-  <details class="row">
-    <summary>
-      <span class="cc">Fund Administration</span>
-      <span>Contractors</span>
-      <span class="num">$404K</span>
-      <span class="num">$250K</span>
-      <span class="num unfav">+$154K</span>
-      <span class="num unfav">+61.7%</span>
-    </summary>
-    <div class="gl">
-      <table>
-        <tr><th>Journal</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
-        
-        <tr class=""><td><code>JE-2609-014</code></td><td>2026-09-08</td><td>Brightwater Staffing - fund accounting temps</td><td class="num">$206K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-039</code></td><td>2026-09-20</td><td>Corvane Consulting - NAV reconciliation support</td><td class="num">$198K</td></tr>
-        
-      </table>
-    </div>
-  </details>
-  
-  <details class="row">
-    <summary>
-      <span class="cc">Investor Services</span>
-      <span>Professional Fees</span>
-      <span class="num">$174K</span>
-      <span class="num">$90K</span>
-      <span class="num unfav">+$84K</span>
-      <span class="num unfav">+92.9%</span>
-    </summary>
-    <div class="gl">
-      <table>
-        <tr><th>Journal</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
-        
-        <tr class=""><td><code>JE-2609-025</code></td><td>2026-09-13</td><td>Tessellate Tax Advisors - investor tax reporting</td><td class="num">$3,632</td></tr>
-        
-        <tr class="dup"><td><code>JE-2609-036</code></td><td>2026-09-18</td><td>Larkspur Assurance Partners - Q3 compliance review</td><td class="num">$85K</td></tr>
-        
-        <tr class="dup"><td><code>JE-2609-037</code></td><td>2026-09-18</td><td>Larkspur Assurance Partners - Q3 compliance review</td><td class="num">$85K</td></tr>
-        
-      </table>
-    </div>
-  </details>
-  
-  <details class="row">
-    <summary>
-      <span class="cc">Technology</span>
-      <span>Salaries &amp; Wages</span>
-      <span class="num">$1.32M</span>
-      <span class="num">$1.50M</span>
-      <span class="num fav">−$178K</span>
-      <span class="num fav">-11.9%</span>
-    </summary>
-    <div class="gl">
-      <table>
-        <tr><th>Journal</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
-        
-        <tr class=""><td><code>JE-2609-031</code></td><td>2026-09-15</td><td>Payroll run - semi-monthly (15th)</td><td class="num">$779K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-055</code></td><td>2026-09-30</td><td>Payroll run - month-end</td><td class="num">$543K</td></tr>
-        
-      </table>
-    </div>
-  </details>
-  
-  <details class="row">
-    <summary>
-      <span class="cc">Technology</span>
-      <span>Software &amp; Cloud</span>
-      <span class="num">$746K</span>
-      <span class="num">$650K</span>
-      <span class="num unfav">+$96K</span>
-      <span class="num unfav">+14.8%</span>
-    </summary>
-    <div class="gl">
-      <table>
-        <tr><th>Journal</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
-        
-        <tr class=""><td><code>JE-2609-007</code></td><td>2026-09-04</td><td>Stratus Cloud - infrastructure usage</td><td class="num">$148K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-016</code></td><td>2026-09-09</td><td>Vantage Monitoring - observability</td><td class="num">$164K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-032</code></td><td>2026-09-15</td><td>CodeForge - developer tooling seats</td><td class="num">$239K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-040</code></td><td>2026-09-21</td><td>SecureGate - identity and security suite</td><td class="num">$195K</td></tr>
-        
-      </table>
-    </div>
-  </details>
-  
-  <details class="row">
-    <summary>
-      <span class="cc">Corporate</span>
-      <span>Professional Fees</span>
-      <span class="num">$463K</span>
-      <span class="num">$200K</span>
-      <span class="num unfav">+$263K</span>
-      <span class="num unfav">+131.3%</span>
-    </summary>
-    <div class="gl">
-      <table>
-        <tr><th>Journal</th><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
-        
-        <tr class=""><td><code>JE-2609-013</code></td><td>2026-09-07</td><td>Delmont &amp; Rowe LLP - general counsel retainer</td><td class="num">$95K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-041</code></td><td>2026-09-22</td><td>Halvorsen Pryce LLP - litigation settlement advice (one-off)</td><td class="num">$262K</td></tr>
-        
-        <tr class=""><td><code>JE-2609-043</code></td><td>2026-09-23</td><td>Kestrel Audit Partners - corporate audit fees</td><td class="num">$105K</td></tr>
-        
-      </table>
-    </div>
-  </details>
-  
-</div>
-<details style="margin-top:10px">
-  <summary class="sub">Show all 31 cost-center × account lines</summary>
-  <div class="card" style="margin-top:8px">
-  <table>
-    <tr><th>Cost center</th><th>Account</th><th class="num">Actual</th><th class="num">Budget</th><th class="num">Variance</th><th class="num">%</th><th>Material</th></tr>
-    
-    <tr><td>Fund Administration</td><td>Fund Admin Fees</td><td class="num">$2.83M</td><td class="num">$3.25M</td>
-        <td class="num unfav">−$422K</td><td class="num">-13.0%</td><td>●</td></tr>
-    
-    <tr><td>Investor Services</td><td>Management Fees</td><td class="num">$11.46M</td><td class="num">$11.50M</td>
-        <td class="num unfav">−$40K</td><td class="num">-0.3%</td><td></td></tr>
-    
-    <tr><td>Corporate</td><td>Advisory Fees</td><td class="num">$1.80M</td><td class="num">$1.50M</td>
-        <td class="num fav">+$304K</td><td class="num">+20.3%</td><td>●</td></tr>
-    
-    <tr><td>Fund Administration</td><td>Salaries &amp; Wages</td><td class="num">$1.94M</td><td class="num">$1.95M</td>
-        <td class="num fav">−$5,961</td><td class="num">-0.3%</td><td></td></tr>
-    
-    <tr><td>Fund Administration</td><td>Benefits</td><td class="num">$426K</td><td class="num">$430K</td>
-        <td class="num fav">−$3,809</td><td class="num">-0.9%</td><td></td></tr>
-    
-    <tr><td>Fund Administration</td><td>Contractors</td><td class="num">$404K</td><td class="num">$250K</td>
-        <td class="num unfav">+$154K</td><td class="num">+61.7%</td><td>●</td></tr>
-    
-    <tr><td>Fund Administration</td><td>Software &amp; Cloud</td><td class="num">$149K</td><td class="num">$150K</td>
-        <td class="num fav">−$1,409</td><td class="num">-0.9%</td><td></td></tr>
-    
-    <tr><td>Fund Administration</td><td>Occupancy</td><td class="num">$221K</td><td class="num">$220K</td>
-        <td class="num unfav">+$741</td><td class="num">+0.3%</td><td></td></tr>
-    
-    <tr><td>Fund Administration</td><td>Professional Fees</td><td class="num">$60K</td><td class="num">$60K</td>
-        <td class="num unfav">+$421</td><td class="num">+0.7%</td><td></td></tr>
-    
-    <tr><td>Fund Administration</td><td>Travel &amp; Entertainment</td><td class="num">$50K</td><td class="num">$50K</td>
-        <td class="num unfav">+$46</td><td class="num">+0.1%</td><td></td></tr>
-    
-    <tr><td>Investor Services</td><td>Salaries &amp; Wages</td><td class="num">$1.06M</td><td class="num">$1.05M</td>
-        <td class="num unfav">+$7,281</td><td class="num">+0.7%</td><td></td></tr>
-    
-    <tr><td>Investor Services</td><td>Benefits</td><td class="num">$234K</td><td class="num">$230K</td>
-        <td class="num unfav">+$3,894</td><td class="num">+1.7%</td><td></td></tr>
-    
-    <tr><td>Investor Services</td><td>Contractors</td><td class="num">$59K</td><td class="num">$60K</td>
-        <td class="num fav">−$801</td><td class="num">-1.3%</td><td></td></tr>
-    
-    <tr><td>Investor Services</td><td>Software &amp; Cloud</td><td class="num">$90K</td><td class="num">$90K</td>
-        <td class="num fav">−$277</td><td class="num">-0.3%</td><td></td></tr>
-    
-    <tr><td>Investor Services</td><td>Occupancy</td><td class="num">$122K</td><td class="num">$120K</td>
-        <td class="num unfav">+$1,693</td><td class="num">+1.4%</td><td></td></tr>
-    
-    <tr><td>Investor Services</td><td>Professional Fees</td><td class="num">$174K</td><td class="num">$90K</td>
-        <td class="num unfav">+$84K</td><td class="num">+92.9%</td><td>●</td></tr>
-    
-    <tr><td>Investor Services</td><td>Travel &amp; Entertainment</td><td class="num">$61K</td><td class="num">$60K</td>
-        <td class="num unfav">+$519</td><td class="num">+0.9%</td><td></td></tr>
-    
-    <tr><td>Technology</td><td>Salaries &amp; Wages</td><td class="num">$1.32M</td><td class="num">$1.50M</td>
-        <td class="num fav">−$178K</td><td class="num">-11.9%</td><td>●</td></tr>
-    
-    <tr><td>Technology</td><td>Benefits</td><td class="num">$335K</td><td class="num">$330K</td>
-        <td class="num unfav">+$4,770</td><td class="num">+1.4%</td><td></td></tr>
-    
-    <tr><td>Technology</td><td>Contractors</td><td class="num">$257K</td><td class="num">$260K</td>
-        <td class="num fav">−$2,977</td><td class="num">-1.1%</td><td></td></tr>
-    
-    <tr><td>Technology</td><td>Software &amp; Cloud</td><td class="num">$746K</td><td class="num">$650K</td>
-        <td class="num unfav">+$96K</td><td class="num">+14.8%</td><td>●</td></tr>
-    
-    <tr><td>Technology</td><td>Occupancy</td><td class="num">$132K</td><td class="num">$130K</td>
-        <td class="num unfav">+$2,396</td><td class="num">+1.8%</td><td></td></tr>
-    
-    <tr><td>Technology</td><td>Professional Fees</td><td class="num">$30K</td><td class="num">$30K</td>
-        <td class="num unfav">+$468</td><td class="num">+1.6%</td><td></td></tr>
-    
-    <tr><td>Technology</td><td>Travel &amp; Entertainment</td><td class="num">$20K</td><td class="num">$20K</td>
-        <td class="num unfav">+$137</td><td class="num">+0.7%</td><td></td></tr>
-    
-    <tr><td>Corporate</td><td>Salaries &amp; Wages</td><td class="num">$889K</td><td class="num">$900K</td>
-        <td class="num fav">−$11K</td><td class="num">-1.2%</td><td></td></tr>
-    
-    <tr><td>Corporate</td><td>Benefits</td><td class="num">$206K</td><td class="num">$210K</td>
-        <td class="num fav">−$3,775</td><td class="num">-1.8%</td><td></td></tr>
-    
-    <tr><td>Corporate</td><td>Contractors</td><td class="num">$50K</td><td class="num">$50K</td>
-        <td class="num fav">−$242</td><td class="num">-0.5%</td><td></td></tr>
-    
-    <tr><td>Corporate</td><td>Software &amp; Cloud</td><td class="num">$60K</td><td class="num">$60K</td>
-        <td class="num unfav">+$101</td><td class="num">+0.2%</td><td></td></tr>
-    
-    <tr><td>Corporate</td><td>Occupancy</td><td class="num">$89K</td><td class="num">$90K</td>
-        <td class="num fav">−$1,131</td><td class="num">-1.3%</td><td></td></tr>
-    
-    <tr><td>Corporate</td><td>Professional Fees</td><td class="num">$463K</td><td class="num">$200K</td>
-        <td class="num unfav">+$263K</td><td class="num">+131.3%</td><td>●</td></tr>
-    
-    <tr><td>Corporate</td><td>Travel &amp; Entertainment</td><td class="num">$61K</td><td class="num">$60K</td>
-        <td class="num unfav">+$604</td><td class="num">+1.0%</td><td></td></tr>
-    
-    <tr><th>Total revenue</th><th></th><th class="num">$16.09M</th><th class="num">$16.25M</th><th class="num">−$158K</th><th class="num">-1.0%</th><th></th></tr>
-    <tr><th>Total expenses</th><th></th><th class="num">$9.71M</th><th class="num">$9.30M</th><th class="num">+$410K</th><th class="num">+4.4%</th><th></th></tr>
-  </table>
-  </div>
-</details>
-
-
-
-<h2>Drafts, sentence by sentence</h2>
-<p class="sub">Legend: <span class="chip VERIFIED">VERIFIED</span> every figure recomputed from the GL within tolerance ($1,000 or 0.5%) ·
-<span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span> the numbers check out but the <em>why</em> is not in the data ·
-<span class="chip UNSUPPORTED">UNSUPPORTED</span> a figure did not recompute or has no claim behind it.</p>
-<div class="two">
-  <div>
-    <h2 style="margin-top:8px">Variance commentary</h2>
-    
-  
-  <h3>Revenue</h3>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Fund Admin Fees were $0.42M below budget, a shortfall of 13.0%.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered · source: context_notes.md#1</span>
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Your judgment queue</span>
+    <h2>Three questions only a person can answer</h2>
+    <div class="queue">
+      <div class="q"><span class="amt num">+$304K</span><h3>Advisory Fees</h3>
+        <p>Two client mandates billed above plan. The ledger can't say why.</p>
+        <p class="ask">What drove it, and will any of it repeat?</p></div>
+      <div class="q"><span class="amt num">+$96K</span><h3>Software &amp; Cloud</h3>
+        <p>Four vendors in Technology, all a little high.</p>
+        <p class="ask">Is this usage or new licences, and will it continue?</p></div>
+      <div class="q"><span class="amt num">$85K</span><h3>Duplicate invoice</h3>
+        <p>JE-2609-037 looks like a copy of JE-2609-036.</p>
+        <p class="ask">Confirm it, and reverse it if so.</p></div>
     </div>
   </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      The shortfall is driven by a new fund client&#39;s onboarding slipping from September to October, so its first billing cycle has not started.
-      <span class="reason">no figures to check; driver cited from context_notes.md#1 · source: context_notes.md#1</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      Advisory Fees were $0.30M above budget, 20.3% over. Hypothesis A: new or expanded advisory mandates. Hypothesis B: performance-linked or one-time fees recognised in September. <span class="analyst">[ANALYST: what drove the Advisory Fees overage, and is any of it non-recurring?]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-  <h3>Expenses</h3>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Technology Salaries &amp; Wages were $178K below budget, 11.9% under.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered · source: context_notes.md#2</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      The underspend is because two senior hires started a month later than planned.
-      <span class="reason">no figures to check; driver cited from context_notes.md#2 · source: context_notes.md#2</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Corporate Professional Fees were $263K above budget, 131.3% over.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered · source: context_notes.md#3</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      The overage is a one-off legal fee from Halvorsen Pryce LLP for litigation settlement advice, which is not expected to recur.
-      <span class="reason">no figures to check; driver cited from context_notes.md#3 · source: context_notes.md#3</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Fund Administration Contractors were $154K above budget, 61.7% over, as contractors are backfilling two open reconciliation roles until year end.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered · source: context_notes.md#4</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      Technology Software &amp; Cloud was $96K above budget, 14.8% over. Hypothesis A: usage-based cloud consumption above plan. Hypothesis B: new licences or renewals not in the budget. <span class="analyst">[ANALYST: is the Software &amp; Cloud overage usage-driven or from new licences, and will it continue?]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      Investor Services Professional Fees were $84K above budget, 92.9% over. The GL holds two identical Larkspur Assurance Partners postings on 18 September (JE-2609-036 and JE-2609-037), which may be a duplicate. <span class="analyst">[ANALYST: confirm whether JE-2609-037 duplicates JE-2609-036 and reverse it if so]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-
-  </div>
-  <div>
-    <h2 style="margin-top:8px">Board narrative (first draft)</h2>
-    
-  
-  <h3>Headline</h3>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Revenue was $158K below budget, 1.0% under.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Expenses were $410K above budget, 4.4% over, and a one-off legal fee of $263K in Corporate Professional Fees is the largest single item.
-      <span class="reason">3 claim(s) recomputed from GL; 3 figure(s) covered · source: context_notes.md#3</span>
-    </div>
-  </div>
-  
-  
-  <h3>Revenue</h3>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Fund Admin Fees were $0.42M below budget, 13.0% under.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered · source: context_notes.md#1</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      A new fund client&#39;s onboarding moved from September to October, so its first billing cycle has not started.
-      <span class="reason">no figures to check; driver cited from context_notes.md#1 · source: context_notes.md#1</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      Advisory Fees were $304K above budget, 20.3% over. Hypothesis A: new or expanded advisory mandates. Hypothesis B: performance-linked or one-time fees recognised in September. <span class="analyst">[ANALYST: what drove the Advisory Fees overage, and is any of it non-recurring?]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-  <h3>Costs</h3>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Technology Salaries &amp; Wages were $178K below budget, 11.9% under.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered · source: context_notes.md#2</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Two senior hires started a month later than planned.
-      <span class="reason">no figures to check; driver cited from context_notes.md#2 · source: context_notes.md#2</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      Corporate Professional Fees were $263K above budget, 131.3% over.
-      <span class="reason">2 claim(s) recomputed from GL; 2 figure(s) covered · source: context_notes.md#3</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence VERIFIED">
-    <span class="chip VERIFIED">VERIFIED</span>
-    <div>
-      The overage is a one-off legal fee from Halvorsen Pryce LLP for litigation settlement advice, which the context notes record as not expected to recur.
-      <span class="reason">no figures to check; driver cited from context_notes.md#3 · source: context_notes.md#3</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      Fund Administration Contractors were $154K above budget, 61.7% over. Hypothesis A: temporary cover for the delayed client onboarding or other workload. Hypothesis B: unbudgeted contractor engagements. <span class="analyst">[ANALYST: which engagements drove the Fund Administration contractor spend above budget?]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      Technology Software &amp; Cloud was $96K above budget, 14.8% over. Hypothesis A: usage-based cloud consumption above plan. Hypothesis B: new licences or renewals not in the budget. <span class="analyst">[ANALYST: is the Software &amp; Cloud overage usage-driven or from new licences?]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-  <h3>Watch items</h3>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      Investor Services Professional Fees were $84K above budget, 92.9% over. The GL holds two identical Larkspur Assurance Partners postings on 18 September (JE-2609-036 and JE-2609-037), which may be a duplicate. <span class="analyst">[ANALYST: confirm whether JE-2609-037 duplicates JE-2609-036 and reverse it if so]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-  <div class="sentence NEEDS_JUDGMENT">
-    <span class="chip NEEDS_JUDGMENT">NEEDS JUDGMENT</span>
-    <div>
-      The delayed client onboarding may or may not begin billing in October. <span class="analyst">[ANALYST: has the onboarding gone live, and when does the first billing cycle start?]</span>
-      <span class="reason">hypothesis / open analyst question</span>
-    </div>
-  </div>
-  
-  
-
-  </div>
-</div>
-
-<h2>Your judgment queue</h2>
-<div class="card">
-  
-  <ol class="queue">
-    
-    <li><strong>what drove the Advisory Fees overage, and is any of it non-recurring?</strong>
-        <span class="ctx">Advisory Fees were $0.30M above budget, 20.3% over. Hypothesis A: new or expanded advisory mandates. Hypothesis B: performance-linked or one-time fees recognised in September. <span class="src">(commentary c-003, board_narrative b-005)</span></span></li>
-    
-    <li><strong>is the Software &amp; Cloud overage usage-driven or from new licences, and will it continue?</strong>
-        <span class="ctx">Technology Software &amp; Cloud was $96K above budget, 14.8% over. Hypothesis A: usage-based cloud consumption above plan. Hypothesis B: new licences or renewals not in the budget. <span class="src">(commentary c-009)</span></span></li>
-    
-    <li><strong>confirm whether JE-2609-037 duplicates JE-2609-036 and reverse it if so</strong>
-        <span class="ctx">Investor Services Professional Fees were $84K above budget, 92.9% over. The GL holds two identical Larkspur Assurance Partners postings on 18 September (JE-2609-036 and JE-2609-037), which may be a duplicate. <span class="src">(commentary c-010, board_narrative b-012)</span></span></li>
-    
-    <li><strong>which engagements drove the Fund Administration contractor spend above budget?</strong>
-        <span class="ctx">Fund Administration Contractors were $154K above budget, 61.7% over. Hypothesis A: temporary cover for the delayed client onboarding or other workload. Hypothesis B: unbudgeted contractor engagements. <span class="src">(board_narrative b-010)</span></span></li>
-    
-    <li><strong>is the Software &amp; Cloud overage usage-driven or from new licences?</strong>
-        <span class="ctx">Technology Software &amp; Cloud was $96K above budget, 14.8% over. Hypothesis A: usage-based cloud consumption above plan. Hypothesis B: new licences or renewals not in the budget. <span class="src">(board_narrative b-011)</span></span></li>
-    
-    <li><strong>has the onboarding gone live, and when does the first billing cycle start?</strong>
-        <span class="ctx">The delayed client onboarding may or may not begin billing in October. <span class="src">(board_narrative b-013)</span></span></li>
-    
-  </ol>
-  
-</div>
-
-<h2 id="assumptions">How “~10.2 hours of assembly work” is estimated</h2>
-<div class="card">
-  <table>
-    <tr><th>Task the pipeline did</th><th class="num">Count</th><th class="num">Minutes each</th><th class="num">Minutes</th></tr>
-    
-    <tr><td>Pull GL + budget, tie out totals</td><td class="num">1</td><td class="num">90</td><td class="num">90</td></tr>
-    
-    <tr><td>Build BvA by cost center</td><td class="num">4</td><td class="num">20</td><td class="num">80</td></tr>
-    
-    <tr><td>First-draft commentary per material variance</td><td class="num">7</td><td class="num">25</td><td class="num">175</td></tr>
-    
-    <tr><td>First-draft board narrative</td><td class="num">1</td><td class="num">120</td><td class="num">120</td></tr>
-    
-    <tr><td>Tie every figure in every sentence back to source</td><td class="num">23</td><td class="num">5</td><td class="num">115</td></tr>
-    
-    <tr><td>Scan GL for duplicate postings</td><td class="num">1</td><td class="num">30</td><td class="num">30</td></tr>
-    
-    <tr><th>Total</th><th></th><th></th><th class="num">610 min ≈ 10.2 h</th></tr>
-  </table>
-  <p class="sub" style="margin-top:10px">Assumptions, not measurements. Replace with Meridian&#39;s own timings in the first workshop. Edit <code>config/assumptions.json</code> and re-run <code>python run.py</code>.</p>
-</div>
+</section>
 
 <footer>
-  <p>How this was built: Python computed every variance and re-checked every figure in the AI drafts against the raw GL.
-     Claude subagents wrote only the words, each sentence carrying structured claims the checker could recompute.
-     Where the data could not explain a variance, the draft was required to ask the analyst instead of inventing a reason.</p>
-  <p>All data is synthetic. No real company, client or person is represented.</p>
+  <div class="wrap">
+    <span>Meridian Capital Services is fictional. All figures are synthetic and built for a demo.</span>
+    <span><a href="shadow_close.html" style="color:var(--accent)">Open the full detailed report</a>. Hours saved is an estimate from stated minutes-per-task assumptions, not a measurement.</span>
+  </div>
 </footer>
 
-</main>
-</body>
 </html>
